@@ -1,22 +1,26 @@
 
 from django.shortcuts import render
 
-'''from .utils import generic_search
-from .models import Patient, Study, Series, MR_Params, US_Params, CT_Params, Review
-from django.shortcuts  import render_to_response,redirect
 
-
-
+# views.py
 def search(request):
-    query_string = ''
-    found_entries = None
-    if ('q' in request.GET) and request.GET['q'].strip():
-        query_string = request.GET['q']
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            string = form.cleaned_data['search']
+            terms = re.compile(r'[^\s",;.:]+').findall(string)
+            fields = ['field1', 'field1', '...'] # your field names
+            query = None
+            for term in terms:
+                for field in fields:
+                    qry = Q(**{'%s__icontains' % field: term})
+                    if query is None:
+                        query = qry
+                    else:
+                        query = query | qry
+            found_entries = Patient.objects.filter(query).order_by('-something') # your model
+            return render(request, 'results.html', {'found_entries':found_entries})
+    else:
+        form = SearchForm()
+        return render(request, 'search.html', {'form':form})
 
-        entry_query = get_query(query_string, ['title', 'body',])
-
-        found_entries = Patient.objects.filter(entry_query) #.order_by('-pub_date')
-
-    return render_to_response('polls/index.html',
-                          { 'query_string': query_string, 'found_entries': found_entries },
-                          context_instance=RequestContext(request))'''

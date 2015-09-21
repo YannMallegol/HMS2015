@@ -1,8 +1,20 @@
-import os, re
+import os, re, sys
 from django.db.models import Q
 from polls.models import Patient, Study, Series, MR_Params, US_Params, CT_Params, Review
 from django.core.management.base import BaseCommand
 from operator import __or__ as OR
+
+'''proj_path = "/neuro/users/yann.mallegol/Documents/internship/Mysql_test/python_test/mysite"
+# This is so Django knows where to find stuff.
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "polls.settings")
+sys.path.append(proj_path)
+
+# This is so my local_settings.py gets loaded.
+os.chdir(proj_path)
+
+# This is so models get loaded.
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()'''
 
 
 
@@ -12,28 +24,19 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        #search_fields=['Patient','Study', 'Series']
-        #print('make a query: ')
+
         print(' ')
-        #query_string=input()
-        #query=None
-        #query_string=re.compile(r'[^\s";,.:]+').findall(query_string)
-        #print('search fileds: ')
-        #search_fields=input()
+        
 
 
-
-    def normalize_query(query_string):
-        re.compile(r'[^\s";,.:]+').findall(query_string)
-        print(query_string)
-        return(query_string)
 
     def get_query(query_string,search_fields):  
+        
         query=None 
         query_string=re.compile(r'[^\s";,.:]+').findall(query_string)
         terms = query_string
-                # init our q objects variable to use .add() on it
-        #q_objects = Q()
+        #print(terms)
+      
 
         for term in terms:
             or_query = None
@@ -42,7 +45,7 @@ class Command(BaseCommand):
                 if or_query is None:
                     or_query = q
                 else:
-                    or_query = or_query | q
+                    or_query = or_query | q    #MODIF | to &
             if query is None:
                 query = or_query
             else:
@@ -51,10 +54,26 @@ class Command(BaseCommand):
 
 
       
-    qry = get_query(' DIFFUSION  888 021Y ', ['SeriesDescription','SeriesInstanceUID'])
+    qry = get_query(' 007M   M', ['PatientID','PatientName','PatientSex','PatientAge', 'PatientBirthDate', 'PatientBirthTime'])
 
-    print(qry)
+    #print(qry)
+    
 
-    fe=Series.objects.filter(qry)
-    fe.query
-    print(fe.query)
+
+    fe=Patient.objects.filter(qry)
+    print(fe)
+    ######### we can see the two patients: [<Patient: 4414712>, <Patient: 4448220>]
+    #########it is the right answer
+
+
+
+######### If you want more complex research :
+
+    #fe.query
+    #print(fe.query)
+
+    
+
+
+
+    

@@ -1,0 +1,7 @@
+# search.html
+<form method="POST" action="{% url 'search_for_something' %}">
+    {% csrf_token %}
+    {{ form.search }}
+    <button type="submit">Search</button>
+</form>
+
