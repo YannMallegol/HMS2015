@@ -25,6 +25,7 @@ class Command(BaseCommand):
 
     def normalize_query(query_string):
         re.compile(r'[^\s";,.:]+').findall(query_string)
+        print(query_string)
         return(query_string)
 
     def get_query(query_string,search_fields):  
@@ -42,18 +43,18 @@ class Command(BaseCommand):
                     or_query = q
                 else:
                     or_query = or_query | q
-        if query is None:
-            query = or_query
-        else:
-            query = query & or_query
+            if query is None:
+                query = or_query
+            else:
+                query = query & or_query
         return(query)
 
 
       
-    qry = get_query(' 140001   DIFFUSION 888 ' ['Patient','Study','Series','US_Params','CT_Params','MR_Params'])
+    qry = get_query(' DIFFUSION  888 021Y ', ['SeriesDescription','SeriesInstanceUID'])
 
     print(qry)
 
-    '''fe=Patient.objects.filter(qry)
+    fe=.objects.filter(qry)
     fe.query
-    print(fe.query)'''
+    print(fe.query)
