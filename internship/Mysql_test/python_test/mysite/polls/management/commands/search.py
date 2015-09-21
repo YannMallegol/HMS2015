@@ -55,6 +55,6 @@ class Command(BaseCommand):
 
     print(qry)
 
-    fe=.objects.filter(qry)
+    fe=Series.objects.filter(qry)
     fe.query
     print(fe.query)
