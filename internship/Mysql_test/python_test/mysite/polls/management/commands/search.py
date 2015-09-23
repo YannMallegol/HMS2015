@@ -1,3 +1,4 @@
+
 import os, re, sys
 from django.db.models import Q
 from polls.models import Patient, Study, Series, MR_Params, US_Params, CT_Params, Review
@@ -8,10 +9,8 @@ from operator import __or__ as OR
 # This is so Django knows where to find stuff.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "polls.settings")
 sys.path.append(proj_path)
-
 # This is so my local_settings.py gets loaded.
 os.chdir(proj_path)
-
 # This is so models get loaded.
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()'''
@@ -25,18 +24,42 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
 
+
         print(' ')
         
+    def target_table(query_string): 
+
+        query_string=re.compile(r'[^\s";,.:]+').findall(query_string)
+        terms = query_string   
+
+        for term in terms:
+        
+            if term == "PatientAge" or term == "PatientSex"or term == "PatientID" or term == "PatientName" or term == "PatientPatientBirthDate" or term == "PatientPatientBirthTime":
+                
+                table= "Patient"
+                search_fields= ['PatientID','PatientName','PatientSex','PatientAge', 'PatientBirthDate', 'PatientBirthTime']
+                
+
+            elif term == "StudyDescription" or term == "StationName" or term == "ManufacturerModelName" or term == "StudyInstanceUID" or term == "Pathology" or term == "StudyDate" or term == "StudyTime" or term == "InstitutionName" or term == "ReferringPhysicianName" or term == "PerformingPhysicianName"or term == "ModalitiesInStudy" or term == "MagneticFieldStrength":
+                table="Study"
+                search_fields=['StudyDescription','StationName','ManufacturerModelName','StudyInstanceUID','Pathology','StudyDate','StudyTime','InstitutionName','ReferringPhysicianName','PerformingPhysicianName','ModalitiesInStudy','MagneticFieldStrength']
+                
+            elif term=="+":
+                table=
+            else:
+                table="Series"                  
+
+        return(table, search_fields)  
 
 
 
-    def get_query(query_string,search_fields):  
+    def get_query(query_string):  
         
         query=None 
         query_string=re.compile(r'[^\s";,.:]+').findall(query_string)
         terms = query_string
-        #print(terms)
-      
+        print(terms)
+        choice_table = target_table(query_string)
 
         for term in terms:
             or_query = None
@@ -53,27 +76,18 @@ class Command(BaseCommand):
         return(query)
 
 
-      
-    qry = get_query(' 007M   M', ['PatientID','PatientName','PatientSex','PatientAge', 'PatientBirthDate', 'PatientBirthTime'])
-
-    #print(qry)
-    
-
-
-    fe=Patient.objects.filter(qry)
-    print(fe)
-    ######### we can see the two patients: [<Patient: 4414712>, <Patient: 4448220>]
-    #########it is the right answer
-
-
-
-######### If you want more complex research :
-
-    #fe.query
-    #print(fe.query)
-
     
 
 
 
+
+    qry = get_query('  PatientSex M ')
+
     
+
+ 
+    
+
+
+   # fe=table.objects.filter(qry)
+   # print(fe)
