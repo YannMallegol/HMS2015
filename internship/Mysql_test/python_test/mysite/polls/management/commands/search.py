@@ -49,16 +49,16 @@ class Command(BaseCommand):
         query13=None
         query14=None
         query15=None
-        #query_string=re.compile(r'[^\s";,.:]+').findall(query_string)
+  
 
         new_query=query_string.split()
         dimension_query = len(new_query)
         terms=new_query
 
-        #print(terms.index()=1)
+
 
                 
-
+        # Initialization
 
         table=[]
         target1= []
@@ -67,31 +67,34 @@ class Command(BaseCommand):
         tab_patient= []
         tab_study = []
         tab_series = []
-        index_study = 60
-        index_series = 60
-        index_patient = 60
+        index_study = 60 # random value
+        index_series = 60# random value
+        index_patient = 60# random value
 
 
 
-        for term_search in enumerate(terms) :
+        for term_search in enumerate(terms) : # in order to see the list in the terminal
             print(term_search)
+
+
+
+
+          ###### try to detect an attribute of a table in the list
+
+
+
+####### attribute of the patient table
 
         for term in terms:
             w=(terms.index(term))
             if term == "PatientAge" or term == "PatientSex"or term == "PatientID" or term == "PatientName" or term == "PatientPatientBirthDate" or term == "PatientPatientBirthTime":
 
-                    
-            #table= "Patient"
-            #table_patient=term[]
+  
                 table = term
                 target1=term
-                #print(terms.index(term))
-                #print(index(terms))
+
                 index_patient=(terms.index(term))
 
-               # print(index_patient)
-                
-                #print(term)
                 x=terms.index(term)
 
                 
@@ -99,7 +102,7 @@ class Command(BaseCommand):
                 #new_target == False
                 search_fields= ['PatientID','PatientName','PatientSex','PatientAge', 'PatientBirthDate', 'PatientBirthTime']
 
-                    
+####### attribute of the study table                    
 
             elif term == "StudyDescription" or term == "StationName" or term == "ManufacturerModelName" or term == "StudyInstanceUID" or term == "Pathology" or term == "StudyDate" or term == "StudyTime" or term == "InstitutionName" or term == "ReferringPhysicianName" or term == "PerformingPhysicianName"or term == "ModalitiesInStudy" or term == "MagneticFieldStrength":
             #table="Study"
@@ -113,7 +116,8 @@ class Command(BaseCommand):
                 #new_target=True
                 #print(term)
                 search_fields=['StudyDescription','StationName','ManufacturerModelName','StudyInstanceUID','Pathology','StudyDate','StudyTime','InstitutionName','ReferringPhysicianName','PerformingPhysicianName','ModalitiesInStudy','MagneticFieldStrength']
-                    
+                
+ ####### attribute of the series table                   
                
             elif term == "SeriesNumber" or term == "SeriesInstanceUID" or term == "ProtocolName" or term == "Modality" or term == "SeriesDescription" or term == "SeriesTime" or term == "ContrastAgent" or term=="ScanningSequence" or term=="BodyPartExaminated" or term=="AcquisitionNumber":
                 target3=term
@@ -128,32 +132,29 @@ class Command(BaseCommand):
 
             
 
-            # boucle permettant de detecter un champ d'une table terminee    
+########## check if the script has found some attribute
 
 
-
-                #regarder si les indices de study et series existent
-
-
-        print('debut')
+        print('check')
         print(index_patient)
         print(index_study)
         print(index_series)
-        print('fin')
+        print('ok')
 
 
+
+ ########### Now we are going to test if there are 3 'targets'
 
 
         for term in terms:
             if target1 is not None and target2 is not None and target3 is not None:
 
-                #########################################################on cherche pour  3 targets ######################################################################
+               
 
 
+########## we try to know the order of indexes in order to make the query
 
-    #boucle pour determiner la premiere target table et calculer la requete
-
-                if index_patient < index_series and index_patient < index_study and index_study < index_series:
+                if index_patient < index_series and index_patient < index_study and index_study < index_series:# index_patient is the first index detected and index_study the second
 
                     first_index=index_patient
 
@@ -178,9 +179,17 @@ class Command(BaseCommand):
                             query = or_query
                         else:
                             query = query & or_query
+
+
+                    
+
+
+
+
+
                      #return query
 
-                elif index_patient < index_series and index_patient < index_study and index_study > index_series:  
+                elif index_patient < index_series and index_patient < index_study and index_study > index_series: # index_patient is the first index detected and index_series the second
 
                     first_index=index_patient
 
@@ -203,7 +212,7 @@ class Command(BaseCommand):
                             query1 = query1 & or_query
 
 
-                elif index_study < index_series and index_study < index_patient and index_patient < index_series:
+                elif index_study < index_series and index_study < index_patient and index_patient < index_series: #index_study is the first index detected and index_patient the second
                     first_index=index_study
                     search_fields=['StudyDescription','StationName','ManufacturerModelName','StudyInstanceUID','Pathology','StudyDate','StudyTime','InstitutionName','ReferringPhysicianName','PerformingPhysicianName','ModalitiesInStudy','MagneticFieldStrength']
                     new_list=terms[first_index+1: index_patient]
@@ -225,7 +234,7 @@ class Command(BaseCommand):
                             query2 = query2 & or_query
 
 
-                elif index_study < index_series and index_study < index_patient and index_patient > index_series:
+                elif index_study < index_series and index_study < index_patient and index_patient > index_series:#index_study is the first index detected and index_series the second
 
                     first_index=index_study
                     search_fields=['StudyDescription','StationName','ManufacturerModelName','StudyInstanceUID','Pathology','StudyDate','StudyTime','InstitutionName','ReferringPhysicianName','PerformingPhysicianName','ModalitiesInStudy','MagneticFieldStrength']
@@ -290,7 +299,7 @@ class Command(BaseCommand):
                             query5 = query5 & or_query 
 
 
-                    #calcul de la deuxieme target    
+                    # Second field 
                              
 
                 elif index_patient > index_study and index_patient< index_series:
@@ -415,7 +424,7 @@ class Command(BaseCommand):
                     search_fields= ['SeriesNumber','SeriesInstanceUID','ProtocolName','Modality', 'SeriesDescription', 'SeriesTime','ContrastAgent','ScanningSequence','BodyPartExaminated','AcquisitionNumber']
                     new_list=terms[first_index+1: index_patient]
                     print(new_list)
-                    print('IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIi')
+                    
                     for term  in new_list:
                         or_query = None
                     
@@ -431,7 +440,7 @@ class Command(BaseCommand):
                         else:
                             query11 = query11 & or_query 
 
-    ####### maintenant on esssaye de faire une troisieme target
+    ####### try to find another attribut. If there is an attribut detected, try to make another query
 
 
 
@@ -843,7 +852,7 @@ class Command(BaseCommand):
 
 
 
-####### maintenant si il y a que 1 target########################################
+############ If there is just one attribut
                     
 
 
